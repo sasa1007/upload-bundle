@@ -27,6 +27,12 @@
         "phpunit/phpunit": "^9.0|^10.0",
         "symfony/phpunit-bridge": "^6.0|^7.0"
     },
+    "config": {
+        "allow-plugins": {
+            "composer/package-versions-deprecated": true,
+            "symfony/flex": true
+        }
+    },
     "autoload": {
         "psr-4": {
             "Backend2Plus\\UploadBundle\\": "src/"
@@ -40,14 +46,12 @@
     "extra": {
         "branch-alias": {
             "dev-master": "1.0-dev"
+        },
+        "symfony": {
+            "allow-contrib": true,
+            "require": "7.3.*"
         }
     },
-    "repositories": [
-        {
-            "type": "vcs",
-            "url": "https://github.com/sasa1007/upload-bundle.git"
-        }
-    ],
     "minimum-stability": "stable",
     "prefer-stable": true
 }
