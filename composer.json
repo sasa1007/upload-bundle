@@ -20,7 +20,7 @@
         "doctrine/orm": "^2.15|^3.0",
         "doctrine/doctrine-bundle": "^2.9|^3.0",
         "league/flysystem": "^3.0",
-        "oneup/flysystem-bundle": "^5.0",
+        "oneup/flysystem-bundle": "^4.0",
         "api-platform/core": "^3.0|^4.0"
     },
     "require-dev": {
