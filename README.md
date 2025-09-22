@@ -1,4 +1,4 @@
-# BeckUp Upload Bundle
+# Upload Bundle
 
 [![GitHub release](https://img.shields.io/github/release/sasa1007/upload-bundle.svg)](https://github.com/sasa1007/upload-bundle/releases)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
