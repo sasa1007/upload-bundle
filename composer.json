@@ -1,5 +1,5 @@
 {
-    "name": "backend2-plus/upload-bundle",
+    "name": "sasa1007/upload-bundle",
     "type": "symfony-bundle",
     "description": "Symfony bundle za upload funkcionalnost sa Flysystem podrškom (koristi postojeći MediaObject entity)",
     "keywords": ["symfony", "bundle", "upload", "flysystem"],
