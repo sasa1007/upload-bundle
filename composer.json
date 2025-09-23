@@ -52,16 +52,16 @@
             "require": "7.3.*"
         }
     },
-    "version": "1.0.5",
+    "version": "1.0.6",
     "scripts": {
         "post-install-cmd": [
-            "php -r \"if (file_exists('config/bundle.php')) { copy('config/bundle.php', '../../config/bundles/upload_bundle.php'); }\""
+            "php -r \"$bundleFile = 'config/bundle.php'; $targetFile = '../../config/bundles.php'; if (file_exists($bundleFile)) { $bundleContent = include $bundleFile; $targetContent = include $targetFile; $merged = array_merge($targetContent, $bundleContent); file_put_contents($targetFile, '<?php\\n\\nreturn ' . var_export($merged, true) . ';\\n'); }\""
         ],
         "post-update-cmd": [
-            "php -r \"if (file_exists('config/bundle.php')) { copy('config/bundle.php', '../../config/bundles/upload_bundle.php'); }\""
+            "php -r \"$bundleFile = 'config/bundle.php'; $targetFile = '../../config/bundles.php'; if (file_exists($bundleFile)) { $bundleContent = include $bundleFile; $targetContent = include $targetFile; $merged = array_merge($targetContent, $bundleContent); file_put_contents($targetFile, '<?php\\n\\nreturn ' . var_export($merged, true) . ';\\n'); }\""
         ]
     },
     "minimum-stability": "stable",
     "prefer-stable": true,
-    "version": "1.0.5"
+    "version": "1.0.6"
 }
