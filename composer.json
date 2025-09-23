@@ -2,6 +2,7 @@
     "name": "backend2-plus/upload-bundle",
     "type": "symfony-bundle",
     "description": "Symfony bundle for upload functionality with Flysystem support (uses existing MediaObject entity)",
+    "version": "1.0.5",
     "keywords": ["symfony", "bundle", "upload", "flysystem"],
     "license": "MIT",
     "authors": [
@@ -51,6 +52,14 @@
             "allow-contrib": true,
             "require": "7.3.*"
         }
+    },
+    "scripts": {
+        "post-install-cmd": [
+            "php -r \"if (file_exists('config/bundle.php')) { copy('config/bundle.php', '../../config/bundles/upload_bundle.php'); }\""
+        ],
+        "post-update-cmd": [
+            "php -r \"if (file_exists('config/bundle.php')) { copy('config/bundle.php', '../../config/bundles/upload_bundle.php'); }\""
+        ]
     },
     "minimum-stability": "stable",
     "prefer-stable": true
