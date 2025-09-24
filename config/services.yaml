@@ -18,7 +18,7 @@ services:
             $publicUploadsFilesystem: '@oneup_flysystem.public_uploads_filesystem'
             $privateUploadsFilesystem: '@oneup_flysystem.private_uploads_filesystem'
 
-    Backend2Plus\UploadBundle\Controller\UploadController:
-        arguments:
-            $publicUploadsFilesystem: '@oneup_flysystem.public_uploads_filesystem'
-            $privateUploadsFilesystem: '@oneup_flysystem.private_uploads_filesystem'
+      # Backend2Plus\UploadBundle\Controller\UploadController:
+      #     arguments:
+      #         $publicUploadsFilesystem: '@oneup_flysystem.public_uploads_filesystem'
+      #         $privateUploadsFilesystem: '@oneup_flysystem.private_uploads_filesystem'

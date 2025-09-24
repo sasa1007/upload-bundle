@@ -13,6 +13,11 @@ use Symfony\Component\Serializer\SerializerInterface;
 
 class UploadController
 {
+    public function __construct()
+    {
+        // Constructor needed for Symfony service container
+    }
+
     #[Route('/bundle/upload/images', methods: ['POST'])]
     public function uploadImages(
         Request $request,
