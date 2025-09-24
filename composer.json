@@ -46,13 +46,9 @@
     "extra": {
         "branch-alias": {
             "dev-master": "1.0-dev"
-        },
-        "symfony": {
-            "allow-contrib": false,
-            "require": "7.3.*"
         }
     },
     "minimum-stability": "stable",
     "prefer-stable": true,
-    "version": "1.1.1"
+    "version": "1.1.2"
 }
