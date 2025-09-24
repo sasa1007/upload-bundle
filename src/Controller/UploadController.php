@@ -24,25 +24,23 @@ class UploadController
         EntityManagerInterface $entityManager,
         SerializerInterface $serializer,
         UploadService $uploadService,
-        $mediaObjectRepository,
-        $mediaObjectClass,
     ): JsonResponse {
         $files = $request->files->get('files');
         $singleFile = $request->files->get('file');
         $mediaObjectId = $request->request->get('mediaObjectId');
 
         if ($files && is_array($files)) {
-            $uploadedFiles = $this->handleMultipleFiles($files, $entityManager, $serializer, $uploadService, $request, $mediaObjectClass);
+            $uploadedFiles = $this->handleMultipleFiles($files, $entityManager, $serializer, $uploadService, $request);
             return new JsonResponse(['files' => $uploadedFiles]);
         } elseif ($singleFile) {
-            $uploadedFiles = $this->handleSingleFile($singleFile, $mediaObjectId, $entityManager, $mediaObjectRepository, $serializer, $uploadService, $request, $mediaObjectClass);
+            $uploadedFiles = $this->handleSingleFile($singleFile, $mediaObjectId, $entityManager, $serializer, $uploadService, $request);
             return new JsonResponse(['files' => $uploadedFiles]);
         }
 
         throw new BadRequestHttpException('No files provided');
     }
 
-    private function handleMultipleFiles(array $files, EntityManagerInterface $entityManager, SerializerInterface $serializer, UploadService $uploadService, Request $request, $mediaObjectClass): array
+    private function handleMultipleFiles(array $files, EntityManagerInterface $entityManager, SerializerInterface $serializer, UploadService $uploadService, Request $request): array
     {
         $uploadedFiles = [];
         
@@ -57,7 +55,8 @@ class UploadController
 
             [$fileName, $fileSize] = $uploadService->moveFile($file, $filePathClean);
             
-            $mediaObject = new $mediaObjectClass();
+            // Koristimo MediaObject entitet iz glavnog projekta
+            $mediaObject = new \App\Bundles\MediaObject\Entity\MediaObject();
             $mediaObject->setFilePath($fileName);
             $mediaObject->setFileSize($fileSize);
             
@@ -70,7 +69,7 @@ class UploadController
         return $uploadedFiles;
     }
 
-    private function handleSingleFile($singleFile, $mediaObjectId, EntityManagerInterface $entityManager, $mediaObjectRepository, SerializerInterface $serializer, UploadService $uploadService, Request $request, $mediaObjectClass): array
+    private function handleSingleFile($singleFile, $mediaObjectId, EntityManagerInterface $entityManager, SerializerInterface $serializer, UploadService $uploadService, Request $request): array
     {
         // Uzimamo filePathClean iz request-a - ako nije prosleđen, podrazumeva se false
         $filePathCleanParam = $request->request->get('filePathClean', 'false');
@@ -79,7 +78,7 @@ class UploadController
         if ($mediaObjectId) {
             [$fileName, $fileSize] = $uploadService->moveFile($singleFile, $filePathClean);
             
-            $mediaObject = $mediaObjectRepository->find($mediaObjectId);
+            $mediaObject = $entityManager->getRepository(\App\Bundles\MediaObject\Entity\MediaObject::class)->find($mediaObjectId);
             if (!$mediaObject) {
                 throw new BadRequestHttpException('MediaObject with provided ID not found');
             }
