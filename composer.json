@@ -48,11 +48,11 @@
             "dev-master": "1.0-dev"
         },
         "symfony": {
-            "allow-contrib": true,
+            "allow-contrib": false,
             "require": "7.3.*"
         }
     },
     "minimum-stability": "stable",
     "prefer-stable": true,
-    "version": "1.1.0"
+    "version": "1.1.1"
 }
