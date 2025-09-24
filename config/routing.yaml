@@ -1,0 +1,3 @@
+upload:
+    resource: '../src/Controller/'
+    type: attribute

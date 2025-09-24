@@ -1,0 +1,3 @@
+upload:
+    upload_path: '%env(UPLOAD_PATH)%'
+    max_file_size: '%env(int:UPLOAD_MAX_FILE_SIZE)%'
