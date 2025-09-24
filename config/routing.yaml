@@ -1,3 +1,0 @@
-upload_bundle:
-    resource: '@UploadBundle/Controller/'
-    type: attribute
