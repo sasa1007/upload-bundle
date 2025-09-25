@@ -43,6 +43,7 @@ class UploadController
     private function handleMultipleFiles(array $files, EntityManagerInterface $entityManager, SerializerInterface $serializer, UploadService $uploadService, Request $request): array
     {
         $uploadedFiles = [];
+        $mediaObjects = [];
         
         // Uzimamo filePathClean iz request-a - ako nije prosleđen, podrazumeva se false
         $filePathCleanParam = $request->request->get('filePathClean', 'false');
@@ -61,8 +62,14 @@ class UploadController
             $mediaObject->setFileSize($fileSize);
             
             $entityManager->persist($mediaObject);
-            $entityManager->flush();
-
+            $mediaObjects[] = $mediaObject;
+        }
+        
+        // Flush jednom na kraju za sve fajlove
+        $entityManager->flush();
+        
+        // Sada kada su svi MediaObject-i sačuvani, možemo da ih serializujemo
+        foreach ($mediaObjects as $mediaObject) {
             $uploadedFiles[] = $serializer->normalize($mediaObject, 'jsonld', ['groups' => ['mediaObject:read']]);
         }
 
