@@ -37,7 +37,8 @@ class UploadService
     {
         foreach ($result as $item) {
             if (isset($item['mediaObjectId'], $item['entityId'])) {
-                $mediaObject = $mediaObjectRepository->find($item['mediaObjectId']);
+                // Koristi MediaObjectRepository umesto prosleđenog repository-ja
+                $mediaObject = $this->entityManager->getRepository(\App\Bundles\MediaObject\Entity\MediaObject::class)->find($item['mediaObjectId']);
                 $entityObject = $repository->find($item['entityId']);
                 $entityConnectCreate = new $entityConnect();
                 $entityConnectCreate->setMediaObject($mediaObject);
