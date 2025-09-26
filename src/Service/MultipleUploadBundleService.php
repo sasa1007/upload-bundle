@@ -2,6 +2,7 @@
 
 namespace Backend2Plus\UploadBundle\Service;
 
+use App\Bundles\MediaCenter\Repository\MediaObjectRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use League\Flysystem\FilesystemOperator;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -16,7 +17,7 @@ class MultipleUploadBundleService
         private EntityManagerInterface $entityManager,
         private FilesystemOperator $publicUploadsFilesystem,
         private FilesystemOperator $privateUploadsFilesystem,
-        private \App\Bundles\MediaCenter\Repository\MediaObjectRepository $mediaObjectRepository,
+        private MediaObjectRepository $mediaObjectRepository,
     ) {}
 
     public function moveFile($uploadedFile, bool $filePathClean): array
