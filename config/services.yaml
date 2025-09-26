@@ -8,6 +8,9 @@ services:
         exclude:
             - '../src/DependencyInjection/'
             - '../src/UploadBundle.php'
+    
+    App\Bundles\Upload\:
+        resource: '../src/Service/App/Bundles/Upload/'
 
     Backend2Plus\UploadBundle\Controller\:
         resource: '../src/Controller'
@@ -17,9 +20,6 @@ services:
         arguments:
             $publicUploadsFilesystem: '@oneup_flysystem.public_uploads_filesystem_filesystem'
             $privateUploadsFilesystem: '@oneup_flysystem.private_uploads_filesystem_filesystem'
-
-    # Alias for backward compatibility
-    App\Bundles\Upload\MultipleUploadBundleService: '@Backend2Plus\UploadBundle\Service\MultipleUploadBundleService'
 
       # Backend2Plus\UploadBundle\Controller\UploadController:
       #     arguments:
