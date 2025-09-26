@@ -24,6 +24,7 @@ class UploadController
         EntityManagerInterface $entityManager,
         SerializerInterface $serializer,
         UploadService $uploadService,
+        \App\Bundles\MediaCenter\Repository\MediaObjectRepository $mediaObjectRepository,
     ): JsonResponse {
         $files = $request->files->get('files');
         $singleFile = $request->files->get('file');
@@ -33,7 +34,7 @@ class UploadController
             $uploadedFiles = $this->handleMultipleFiles($files, $entityManager, $serializer, $uploadService, $request);
             return new JsonResponse(['files' => $uploadedFiles]);
         } elseif ($singleFile) {
-            $uploadedFiles = $this->handleSingleFile($singleFile, $mediaObjectId, $entityManager, $serializer, $uploadService, $request);
+            $uploadedFiles = $this->handleSingleFile($singleFile, $mediaObjectId, $entityManager, $mediaObjectRepository, $serializer, $uploadService, $request);
             return new JsonResponse(['files' => $uploadedFiles]);
         }
 
@@ -43,7 +44,6 @@ class UploadController
     private function handleMultipleFiles(array $files, EntityManagerInterface $entityManager, SerializerInterface $serializer, UploadService $uploadService, Request $request): array
     {
         $uploadedFiles = [];
-        $mediaObjects = [];
         
         // Uzimamo filePathClean iz request-a - ako nije prosleđen, podrazumeva se false
         $filePathCleanParam = $request->request->get('filePathClean', 'false');
@@ -56,27 +56,20 @@ class UploadController
 
             [$fileName, $fileSize] = $uploadService->moveFile($file, $filePathClean);
             
-            // Koristimo MediaObject entitet iz glavnog projekta
             $mediaObject = new \App\Bundles\MediaObject\Entity\MediaObject();
             $mediaObject->setFilePath($fileName);
             $mediaObject->setFileSize($fileSize);
             
             $entityManager->persist($mediaObject);
-            $mediaObjects[] = $mediaObject;
-        }
-        
-        // Flush jednom na kraju za sve fajlove
-        $entityManager->flush();
-        
-        // Sada kada su svi MediaObject-i sačuvani, možemo da ih serializujemo
-        foreach ($mediaObjects as $mediaObject) {
+            $entityManager->flush();
+
             $uploadedFiles[] = $serializer->normalize($mediaObject, 'jsonld', ['groups' => ['mediaObject:read']]);
         }
 
         return $uploadedFiles;
     }
 
-    private function handleSingleFile($singleFile, $mediaObjectId, EntityManagerInterface $entityManager, SerializerInterface $serializer, UploadService $uploadService, Request $request): array
+    private function handleSingleFile($singleFile, $mediaObjectId, EntityManagerInterface $entityManager, \App\Bundles\MediaCenter\Repository\MediaObjectRepository $mediaObjectRepository, SerializerInterface $serializer, UploadService $uploadService, Request $request): array
     {
         // Uzimamo filePathClean iz request-a - ako nije prosleđen, podrazumeva se false
         $filePathCleanParam = $request->request->get('filePathClean', 'false');
@@ -85,7 +78,7 @@ class UploadController
         if ($mediaObjectId) {
             [$fileName, $fileSize] = $uploadService->moveFile($singleFile, $filePathClean);
             
-            $mediaObject = $entityManager->getRepository(\App\Bundles\MediaObject\Entity\MediaObject::class)->find($mediaObjectId);
+            $mediaObject = $mediaObjectRepository->find($mediaObjectId);
             if (!$mediaObject) {
                 throw new BadRequestHttpException('MediaObject with provided ID not found');
             }
