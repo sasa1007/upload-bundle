@@ -30,6 +30,11 @@ class UploadController
         $singleFile = $request->files->get('file');
         $mediaObjectId = $request->request->get('mediaObjectId');
 
+        // Debug information
+        error_log('UploadController - files: ' . print_r($files, true));
+        error_log('UploadController - singleFile: ' . print_r($singleFile, true));
+        error_log('UploadController - all files: ' . print_r($request->files->all(), true));
+
         if ($files && is_array($files)) {
             $uploadedFiles = $this->handleMultipleFiles($files, $entityManager, $serializer, $uploadService, $request);
             return new JsonResponse(['files' => $uploadedFiles]);
