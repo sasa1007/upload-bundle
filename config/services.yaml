@@ -18,6 +18,9 @@ services:
             $publicUploadsFilesystem: '@oneup_flysystem.public_uploads_filesystem_filesystem'
             $privateUploadsFilesystem: '@oneup_flysystem.private_uploads_filesystem_filesystem'
 
+    # Alias for backward compatibility
+    App\Bundles\Upload\MultipleUploadBundleService: '@Backend2Plus\UploadBundle\Service\MultipleUploadBundleService'
+
       # Backend2Plus\UploadBundle\Controller\UploadController:
       #     arguments:
       #         $publicUploadsFilesystem: '@oneup_flysystem.public_uploads_filesystem'
