@@ -26,7 +26,7 @@ class UploadController
         UploadService $uploadService,
         \App\Bundles\MediaCenter\Repository\MediaObjectRepository $mediaObjectRepository,
     ): JsonResponse {
-        $files = $request->files->get('files');
+        $files = $request->files->get('files') ?: $request->files->get('files[]');
         $singleFile = $request->files->get('file');
         $mediaObjectId = $request->request->get('mediaObjectId');
 
