@@ -5,7 +5,6 @@ namespace Backend2Plus\UploadBundle\Controller;
 use Backend2Plus\UploadBundle\Service\UploadService;
 use Doctrine\ORM\EntityManagerInterface;
 use League\Flysystem\FilesystemOperator;
-use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
@@ -14,9 +13,9 @@ use Symfony\Component\Serializer\SerializerInterface;
 
 class UploadController
 {
-    public function __construct(
-        private LoggerInterface $logger
-    ) {
+    public function __construct()
+    {
+        // Constructor needed for Symfony service container
     }
 
     #[Route('/bundle/upload/images', methods: ['POST'])]
@@ -30,11 +29,6 @@ class UploadController
         $files = $request->files->get('files') ?: $request->files->get('files[]');
         $singleFile = $request->files->get('file');
         $mediaObjectId = $request->request->get('mediaObjectId');
-
-        // Debug information
-        $this->logger->info('UploadController - files: ' . print_r($files, true));
-        $this->logger->info('UploadController - singleFile: ' . print_r($singleFile, true));
-        $this->logger->info('UploadController - all files: ' . print_r($request->files->all(), true));
 
         if ($files && is_array($files)) {
             $uploadedFiles = $this->handleMultipleFiles($files, $entityManager, $serializer, $uploadService, $request);
