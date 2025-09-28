@@ -9,8 +9,6 @@ services:
             - '../src/DependencyInjection/'
             - '../src/UploadBundle.php'
     
-    App\Bundles\Upload\:
-        resource: '../src/Service/App/Bundles/Upload/'
 
     Backend2Plus\UploadBundle\Controller\:
         resource: '../src/Controller'
