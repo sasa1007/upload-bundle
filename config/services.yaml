@@ -1,0 +1,27 @@
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+
+    Backend2Plus\UploadBundle\:
+        resource: '../src/'
+        exclude:
+            - '../src/DependencyInjection/'
+            - '../src/UploadBundle.php'
+    
+    App\Bundles\Upload\:
+        resource: '../src/Service/App/Bundles/Upload/'
+
+    Backend2Plus\UploadBundle\Controller\:
+        resource: '../src/Controller'
+        tags: ['controller.service_arguments']
+
+    Backend2Plus\UploadBundle\Service\UploadService:
+        arguments:
+            $publicUploadsFilesystem: '@oneup_flysystem.public_uploads_filesystem_filesystem'
+            $privateUploadsFilesystem: '@oneup_flysystem.private_uploads_filesystem_filesystem'
+
+      # Backend2Plus\UploadBundle\Controller\UploadController:
+      #     arguments:
+      #         $publicUploadsFilesystem: '@oneup_flysystem.public_uploads_filesystem'
+      #         $privateUploadsFilesystem: '@oneup_flysystem.private_uploads_filesystem'

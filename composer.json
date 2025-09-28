@@ -1,0 +1,55 @@
+{
+    "name": "backend2-plus/upload-bundle",
+    "type": "symfony-bundle",
+    "description": "Symfony bundle for upload functionality with Flysystem support (uses existing MediaObject entity)",
+    "keywords": ["symfony", "bundle", "upload", "flysystem"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Backend2 Plus",
+            "email": "sasam09@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=8.1",
+        "symfony/framework-bundle": "^6.0|^7.0",
+        "symfony/http-kernel": "^6.0|^7.0",
+        "symfony/routing": "^6.0|^7.0",
+        "symfony/http-foundation": "^6.0|^7.0",
+        "symfony/serializer": "^6.0|^7.0",
+        "doctrine/orm": "^2.15|^3.0",
+        "doctrine/doctrine-bundle": "^2.9|^3.0",
+        "league/flysystem": "^3.0",
+        "oneup/flysystem-bundle": "^4.0",
+        "api-platform/core": "^3.0|^4.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^9.0|^10.0",
+        "symfony/phpunit-bridge": "^6.0|^7.0"
+    },
+    "config": {
+        "allow-plugins": {
+            "composer/package-versions-deprecated": true,
+            "symfony/flex": true
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "Backend2Plus\\UploadBundle\\": "src/",
+            "App\\Bundles\\Upload\\": "src/Service/App/Bundles/Upload/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Backend2Plus\\UploadBundle\\Tests\\": "tests/"
+        }
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.0-dev"
+        }
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true,
+    "version": "1.0.0"
+}
