@@ -31,8 +31,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Backend2Plus\\UploadBundle\\": "src/",
-            "App\\Bundles\\Upload\\": "src/Service/App/Bundles/Upload/"
+            "Backend2Plus\\UploadBundle\\": "src/"
         }
     },
     "autoload-dev": {
