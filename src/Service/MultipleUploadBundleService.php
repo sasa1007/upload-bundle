@@ -13,46 +13,38 @@ use Symfony\Component\HttpFoundation\JsonResponse;
  */
 class MultipleUploadBundleService
 {
+    private UploadService $uploadService;
+    private MediaObjectRepository $mediaObjectRepository;
+
     public function __construct(
         private EntityManagerInterface $entityManager,
         private FilesystemOperator $publicUploadsFilesystem,
         private FilesystemOperator $privateUploadsFilesystem,
-        private MediaObjectRepository $mediaObjectRepository,
-    ) {}
+        MediaObjectRepository $mediaObjectRepository,
+    ) {
+        $this->mediaObjectRepository = $mediaObjectRepository;
+        $this->uploadService = new UploadService(
+            $entityManager,
+            $publicUploadsFilesystem,
+            $privateUploadsFilesystem
+        );
+    }
 
     public function moveFile($uploadedFile, bool $filePathClean): array
     {
-        $fileName = $uploadedFile->getClientOriginalName();
-        $fileSize = $uploadedFile->getSize();
-        $stream = fopen($uploadedFile->getPathname(), 'r');
-
-        if ($filePathClean) {
-            $this->privateUploadsFilesystem->writeStream($fileName, $stream);
-        } else {
-            $this->publicUploadsFilesystem->writeStream($fileName, $stream);
-        }
-
-        if (is_resource($stream)) {
-            fclose($stream);
-        }
-
-        return [$fileName, $fileSize];
+        return $this->uploadService->moveFile($uploadedFile, $filePathClean);
     }
 
     public function createMediaObjectForEntities($result, $entityConnect, $method, $repository): JsonResponse
     {
-        foreach ($result as $item) {
-            if (isset($item['mediaObjectId'], $item['entityId'])) {
-                $mediaObject = $this->mediaObjectRepository->find($item['mediaObjectId']);
-                $entityObject = $repository->find($item['entityId']);
-                $entityConnectCreate = new $entityConnect();
-                $entityConnectCreate->setMediaObject($mediaObject);
-                $entityConnectCreate->$method($entityObject);
-                $this->entityManager->persist($entityConnectCreate);
-            }
-        }
-
-        $this->entityManager->flush();
-        return new JsonResponse(['success' => true]);
+        // Use the MediaObject entity class from the repository
+        $mediaObjectClass = $this->mediaObjectRepository->getClassName();
+        return $this->uploadService->createMediaObjectForEntities(
+            $result, 
+            $entityConnect, 
+            $method, 
+            $repository, 
+            $mediaObjectClass
+        );
     }
 }

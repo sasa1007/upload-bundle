@@ -12,7 +12,6 @@ class UploadService
         private EntityManagerInterface $entityManager,
         private FilesystemOperator $publicUploadsFilesystem,
         private FilesystemOperator $privateUploadsFilesystem,
-        private \App\Bundles\MediaCenter\Repository\MediaObjectRepository $mediaObjectRepository,
     ) {}
 
     public function moveFile($uploadedFile, bool $filePathClean): array
@@ -34,11 +33,11 @@ class UploadService
         return [$fileName, $fileSize];
     }
 
-    public function createMediaObjectForEntities($result, $entityConnect, $method, $repository): JsonResponse
+    public function createMediaObjectForEntities($result, $entityConnect, $method, $repository, $mediaObjectClass): JsonResponse
     {
         foreach ($result as $item) {
             if (isset($item['mediaObjectId'], $item['entityId'])) {
-                $mediaObject = $this->mediaObjectRepository->find($item['mediaObjectId']);
+                $mediaObject = $this->entityManager->find($mediaObjectClass, $item['mediaObjectId']);
                 $entityObject = $repository->find($item['entityId']);
                 $entityConnectCreate = new $entityConnect();
                 $entityConnectCreate->setMediaObject($mediaObject);
