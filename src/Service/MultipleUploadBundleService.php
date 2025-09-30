@@ -2,7 +2,6 @@
 
 namespace Backend2Plus\UploadBundle\Service;
 
-use App\Bundles\MediaCenter\Repository\MediaObjectRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use League\Flysystem\FilesystemOperator;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -14,15 +13,12 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 class MultipleUploadBundleService
 {
     private UploadService $uploadService;
-    private MediaObjectRepository $mediaObjectRepository;
 
     public function __construct(
         private EntityManagerInterface $entityManager,
         private FilesystemOperator $publicUploadsFilesystem,
         private FilesystemOperator $privateUploadsFilesystem,
-        MediaObjectRepository $mediaObjectRepository,
     ) {
-        $this->mediaObjectRepository = $mediaObjectRepository;
         $this->uploadService = new UploadService(
             $entityManager,
             $publicUploadsFilesystem,
@@ -37,8 +33,8 @@ class MultipleUploadBundleService
 
     public function createMediaObjectForEntities($result, $entityConnect, $method, $repository): JsonResponse
     {
-        // Use the MediaObject entity class from the repository
-        $mediaObjectClass = $this->mediaObjectRepository->getClassName();
+        // Use the MediaObject entity class directly
+        $mediaObjectClass = \App\Bundles\MediaObject\Entity\MediaObject::class;
         return $this->uploadService->createMediaObjectForEntities(
             $result, 
             $entityConnect, 
