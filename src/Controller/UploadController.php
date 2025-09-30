@@ -24,7 +24,6 @@ class UploadController
         EntityManagerInterface $entityManager,
         SerializerInterface $serializer,
         UploadService $uploadService,
-        \App\Bundles\MediaCenter\Repository\MediaObjectRepository $mediaObjectRepository,
     ): JsonResponse {
         $files = $request->files->get('files') ?: $request->files->get('files[]');
         $singleFile = $request->files->get('file');
@@ -34,7 +33,7 @@ class UploadController
             $uploadedFiles = $this->handleMultipleFiles($files, $entityManager, $serializer, $uploadService, $request);
             return new JsonResponse(['files' => $uploadedFiles]);
         } elseif ($singleFile) {
-            $uploadedFiles = $this->handleSingleFile($singleFile, $mediaObjectId, $entityManager, $mediaObjectRepository, $serializer, $uploadService, $request);
+            $uploadedFiles = $this->handleSingleFile($singleFile, $mediaObjectId, $entityManager, $serializer, $uploadService, $request);
             return new JsonResponse(['files' => $uploadedFiles]);
         }
 
@@ -69,7 +68,7 @@ class UploadController
         return $uploadedFiles;
     }
 
-    private function handleSingleFile($singleFile, $mediaObjectId, EntityManagerInterface $entityManager, \App\Bundles\MediaCenter\Repository\MediaObjectRepository $mediaObjectRepository, SerializerInterface $serializer, UploadService $uploadService, Request $request): array
+    private function handleSingleFile($singleFile, $mediaObjectId, EntityManagerInterface $entityManager, SerializerInterface $serializer, UploadService $uploadService, Request $request): array
     {
         // Uzimamo filePathClean iz request-a - ako nije prosleđen, podrazumeva se false
         $filePathCleanParam = $request->request->get('filePathClean', 'false');
@@ -78,7 +77,8 @@ class UploadController
         if ($mediaObjectId) {
             [$fileName, $fileSize] = $uploadService->moveFile($singleFile, $filePathClean);
             
-            $mediaObject = $mediaObjectRepository->find($mediaObjectId);
+            // Use EntityManager to find MediaObject by ID
+            $mediaObject = $entityManager->find(\App\Bundles\MediaObject\Entity\MediaObject::class, $mediaObjectId);
             if (!$mediaObject) {
                 throw new BadRequestHttpException('MediaObject with provided ID not found');
             }
