@@ -1,5 +1,5 @@
 upload_bundle:
     image_resize:
-        max_width: 800
-        max_height: 600
+        max_width: 1200
+        max_height: 1200
         quality: 85

@@ -5,8 +5,6 @@ namespace Backend2Plus\UploadBundle\Service;
 use Doctrine\ORM\EntityManagerInterface;
 use League\Flysystem\FilesystemOperator;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Intervention\Image\ImageManager;
-use Intervention\Image\Drivers\Gd\Driver;
 
 class UploadService
 {
@@ -64,19 +62,68 @@ class UploadService
     
     private function resizeImage($uploadedFile): string
     {
-        $manager = new ImageManager(new Driver());
+        $sourcePath = $uploadedFile->getPathname();
+        $mimeType = $uploadedFile->getMimeType();
         
-        // Učitavamo sliku
-        $image = $manager->read($uploadedFile->getPathname());
-        
-        // Resizeujemo sliku - koristimo konfiguraciju
-        $image->scaleDown(width: $this->maxWidth, height: $this->maxHeight);
-        
-        // Kreiramo privremeni fajl
+        // Kreiranje privremenog fajla
         $tempPath = sys_get_temp_dir() . '/' . uniqid('resized_') . '.jpg';
         
-        // Sačuvamo sa konfigurisanim kvalitetom da smanjimo veličinu
-        $image->toJpeg($this->quality)->save($tempPath);
+        // Učitavanje originalne slike
+        $sourceImage = null;
+        switch ($mimeType) {
+            case 'image/jpeg':
+            case 'image/jpg':
+                $sourceImage = imagecreatefromjpeg($sourcePath);
+                break;
+            case 'image/png':
+                $sourceImage = imagecreatefrompng($sourcePath);
+                break;
+            case 'image/gif':
+                $sourceImage = imagecreatefromgif($sourcePath);
+                break;
+            case 'image/webp':
+                $sourceImage = imagecreatefromwebp($sourcePath);
+                break;
+            default:
+                throw new \Exception('Unsupported image format');
+        }
+        
+        if (!$sourceImage) {
+            throw new \Exception('Failed to load image');
+        }
+        
+        // Dohvatanje dimenzija originalne slike
+        $originalWidth = imagesx($sourceImage);
+        $originalHeight = imagesy($sourceImage);
+        
+        // Izračunavanje novih dimenzija
+        $ratio = min($this->maxWidth / $originalWidth, $this->maxHeight / $originalHeight);
+        
+        if ($ratio >= 1) {
+            // Slika je manja od maksimuma, ne treba resize
+            $newWidth = $originalWidth;
+            $newHeight = $originalHeight;
+        } else {
+            $newWidth = (int)($originalWidth * $ratio);
+            $newHeight = (int)($originalHeight * $ratio);
+        }
+        
+        // Kreiranje nove slike sa novim dimenzijama
+        $newImage = imagecreatetruecolor($newWidth, $newHeight);
+        
+        // Omogućavanje transparencije za PNG
+        imagealphablending($newImage, false);
+        imagesavealpha($newImage, true);
+        
+        // Resizeovanje slike
+        imagecopyresampled($newImage, $sourceImage, 0, 0, 0, 0, $newWidth, $newHeight, $originalWidth, $originalHeight);
+        
+        // Sačuvavanje resizeovane slike
+        imagejpeg($newImage, $tempPath, $this->quality);
+        
+        // Oslobađanje memorije
+        imagedestroy($sourceImage);
+        imagedestroy($newImage);
         
         return $tempPath;
     }

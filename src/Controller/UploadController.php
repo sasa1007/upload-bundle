@@ -29,6 +29,11 @@ class UploadController
         $singleFile = $request->files->get('file');
         $mediaObjectId = $request->request->get('mediaObjectId');
 
+        // Debug logging
+        error_log('UploadController - Files count: ' . (is_array($files) ? count($files) : 'not array'));
+        error_log('UploadController - Single file: ' . ($singleFile ? 'exists' : 'null'));
+        error_log('UploadController - filePathClean: ' . $request->request->get('filePathClean', 'not provided'));
+
         if ($files && is_array($files)) {
             $uploadedFiles = $this->handleMultipleFiles($files, $entityManager, $serializer, $uploadService, $request);
             return new JsonResponse(['files' => $uploadedFiles]);
