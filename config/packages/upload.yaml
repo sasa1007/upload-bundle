@@ -1,3 +1,5 @@
-upload:
-    upload_path: '%env(UPLOAD_PATH)%'
-    max_file_size: '%env(int:UPLOAD_MAX_FILE_SIZE)%'
+upload_bundle:
+    image_resize:
+        max_width: 800
+        max_height: 600
+        quality: 85

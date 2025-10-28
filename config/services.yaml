@@ -18,6 +18,9 @@ services:
         arguments:
             $publicUploadsFilesystem: '@oneup_flysystem.public_uploads_filesystem_filesystem'
             $privateUploadsFilesystem: '@oneup_flysystem.private_uploads_filesystem_filesystem'
+            $maxWidth: '%upload_bundle.image_resize.max_width%'
+            $maxHeight: '%upload_bundle.image_resize.max_height%'
+            $quality: '%upload_bundle.image_resize.quality%'
 
       # Backend2Plus\UploadBundle\Controller\UploadController:
       #     arguments:
