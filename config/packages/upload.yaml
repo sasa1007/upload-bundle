@@ -1,5 +1,9 @@
 upload_bundle:
     image_resize:
-        max_width: 1200
-        max_height: 1200
+        private:
+            max_width: 1200
+            max_height: 1200
+        public:
+            max_width: 2560
+            max_height: 1440
         quality: 85

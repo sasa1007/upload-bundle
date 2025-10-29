@@ -12,8 +12,10 @@ class UploadService
         private EntityManagerInterface $entityManager,
         private FilesystemOperator $publicUploadsFilesystem,
         private FilesystemOperator $privateUploadsFilesystem,
-        private int $maxWidth = 800,
-        private int $maxHeight = 600,
+        private int $privateMaxWidth = 1200,
+        private int $privateMaxHeight = 1200,
+        private int $publicMaxWidth = 2560,
+        private int $publicMaxHeight = 1440,
         private int $quality = 85,
     ) {}
 
@@ -25,9 +27,9 @@ class UploadService
         // Proveravamo da li je fajl slika i da li je private upload
         $isImage = $this->isImageFile($uploadedFile);
         
-        if ($isImage && $filePathClean) {
-            // Resizeujemo sliku samo za private upload
-            $resizedImagePath = $this->resizeImage($uploadedFile);
+        if ($isImage) {
+            // Resizeujemo sliku - različite dimenzije za private i public
+            $resizedImagePath = $this->resizeImage($uploadedFile, $filePathClean);
             $stream = fopen($resizedImagePath, 'r');
             $fileSize = filesize($resizedImagePath);
         } else {
@@ -60,7 +62,7 @@ class UploadService
         return in_array($mimeType, $allowedMimeTypes);
     }
     
-    private function resizeImage($uploadedFile): string
+    private function resizeImage($uploadedFile, bool $isPrivate): string
     {
         $sourcePath = $uploadedFile->getPathname();
         $mimeType = $uploadedFile->getMimeType();
@@ -96,8 +98,12 @@ class UploadService
         $originalWidth = imagesx($sourceImage);
         $originalHeight = imagesy($sourceImage);
         
+        // Biranje dimenzija na osnovu tipa upload-a
+        $maxWidth = $isPrivate ? $this->privateMaxWidth : $this->publicMaxWidth;
+        $maxHeight = $isPrivate ? $this->privateMaxHeight : $this->publicMaxHeight;
+        
         // Izračunavanje novih dimenzija
-        $ratio = min($this->maxWidth / $originalWidth, $this->maxHeight / $originalHeight);
+        $ratio = min($maxWidth / $originalWidth, $maxHeight / $originalHeight);
         
         if ($ratio >= 1) {
             // Slika je manja od maksimuma, ne treba resize

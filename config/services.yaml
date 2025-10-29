@@ -18,8 +18,10 @@ services:
         arguments:
             $publicUploadsFilesystem: '@oneup_flysystem.public_uploads_filesystem_filesystem'
             $privateUploadsFilesystem: '@oneup_flysystem.private_uploads_filesystem_filesystem'
-            $maxWidth: '%upload_bundle.image_resize.max_width%'
-            $maxHeight: '%upload_bundle.image_resize.max_height%'
+            $privateMaxWidth: '%upload_bundle.image_resize.private.max_width%'
+            $privateMaxHeight: '%upload_bundle.image_resize.private.max_height%'
+            $publicMaxWidth: '%upload_bundle.image_resize.public.max_width%'
+            $publicMaxHeight: '%upload_bundle.image_resize.public.max_height%'
             $quality: '%upload_bundle.image_resize.quality%'
 
       # Backend2Plus\UploadBundle\Controller\UploadController:
